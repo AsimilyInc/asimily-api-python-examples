@@ -48,7 +48,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/extapi/assets?page=0&size=100&ipAddr=10.40.0.0/16",
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&ipAddr=10.40.0.0/16&ipAddr=172.17.203.103",
 							"host": [
 								"{{url}}"
 							],
@@ -71,6 +71,11 @@
 								{
 									"key": "ipAddr",
 									"value": "10.40.0.0/16",
+									"description": "IP Address with CIDR range or can specify IP address"
+								},
+								{
+									"key": "ipAddr",
+									"value": "172.17.203.103",
 									"description": "IP Address with CIDR range or can specify IP address"
 								}
 							]
@@ -143,7 +148,8 @@
 								},
 								{
 									"key": "isConnected",
-									"value": "No"
+									"value": "No",
+									"description": "Boolean parameter supports Yes / No values"
 								}
 							]
 						},
