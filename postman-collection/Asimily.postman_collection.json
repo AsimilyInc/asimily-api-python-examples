@@ -1,0 +1,400 @@
+{
+	"info": {
+		"_postman_id": "759d093d-9baf-4a3d-824d-9fc8f237be4f",
+		"name": "Asimily",
+		"description": "**Asimily Insight** provides a RESTful API to allow 3rd party application developers to integrate their NAC, CMMS systems with Asimily Insight. These REST API functions provide access to device information such as IT parameters, medical parameters, security parameters, asset vulnerabilities (CVEs), asset anomalies, FDA recalls, and utilization among others.\n\nThe API enforces secure access through https and basic authentication. Contact your Asimily partner program representative to get access to a test environment and API credentials to start building your Asimily integration application.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21059845"
+	},
+	"item": [
+		{
+			"name": "Assets",
+			"item": [
+				{
+					"name": "All Assests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 15 if not specified."
+								}
+							]
+						},
+						"description": "Returns all Assets discovered in network"
+					},
+					"response": []
+				},
+				{
+					"name": "Assets belongs to specified IP Address within CIDR Range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&ipAddr=10.40.0.0/16",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 15 if not specified."
+								},
+								{
+									"key": "ipAddr",
+									"value": "10.40.0.0/16",
+									"description": "IP Address with CIDR range or can specify IP address"
+								}
+							]
+						},
+						"description": "Returns filtered Assets records based on IP address or IP address CIDR selected in the specific column.\n\ne.g.\n- 10.16.40.158\n- 10.16.0.0/16"
+					},
+					"response": []
+				},
+				{
+					"name": "Asset with specific Mac Address",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&macAddr=00:c0:b7:b2:a7:fd",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 15 if not specified."
+								},
+								{
+									"key": "macAddr",
+									"value": "00:c0:b7:b2:a7:fd"
+								}
+							]
+						},
+						"description": "Returns filtered Asset records based on *Mac Address* selected in the mac address column"
+					},
+					"response": []
+				},
+				{
+					"name": "Asset with boolean parameter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&isConnected=No",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 15 if not specified."
+								},
+								{
+									"key": "isConnected",
+									"value": "No"
+								}
+							]
+						},
+						"description": "Returns filtered Asset records based on the Boolean value in the specific column.\n\nBoolean values:\n- Yes\n- No"
+					},
+					"response": []
+				},
+				{
+					"name": "Assests with Number paramter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&riskGte=8",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 15 if not specified."
+								},
+								{
+									"key": "riskGte",
+									"value": "8",
+									"description": "Number parameter supports greater than, less than and more options. For more information read API documentation"
+								}
+							]
+						},
+						"description": "Returns filtered assets records based on number filter parameter in the specific column. Append below operator string to filter the records. e.g. riskGte, or likelihoodLte\n\nNumber operators supported are:\nGte - Greater than or equal\nGtr - Greater than\nLte - Less than or equal\nLst - Less than"
+					},
+					"response": []
+				},
+				{
+					"name": "Assests with String Parameter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&hostName=*a*",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 15 if not specified."
+								},
+								{
+									"key": "hostName",
+									"value": "*a*",
+									"description": "String params supports contains, starts with and ends with. For more information read API documentation"
+								}
+							]
+						},
+						"description": "Returns Assets with specified string parameter\n\nReturns filtered assets records based on string filter in the specific column.\n\nString operator supported:\n```\n<char>* - Starts with\n*<char>* - Contains\n*<char> - Ends with\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Assests with Date Parameter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&devicesSeenSince=2022-09-01",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 15 if not specified."
+								},
+								{
+									"key": "devicesSeenSince",
+									"value": "2022-09-01",
+									"description": "Date format YYYY-MM-DD is supported"
+								}
+							]
+						},
+						"description": "Returns Assets records based on date selected in the specific column. Date format YYYY-MM-DD is supported, 2022-05-20."
+					},
+					"response": []
+				},
+				{
+					"name": "Assests with Pick List Parameter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&department=Ortho&department=Cardiology",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 15 if not specified."
+								},
+								{
+									"key": "department",
+									"value": "Ortho",
+									"description": "Repeat parameter name to filter based on multiple values"
+								},
+								{
+									"key": "department",
+									"value": "Cardiology",
+									"description": "Repeat parameter name to filter based on multiple values"
+								}
+							]
+						},
+						"description": "Returns Assets with specified Pick List values\n\nFiltered all the records based on selection of distinct value(s) from specific column"
+					},
+					"response": []
+				},
+				{
+					"name": "Assests with Days as Parameter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&discoveredOver=356 days",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 15 if not specified."
+								},
+								{
+									"key": "discoveredOver",
+									"value": "356 days",
+									"description": "Specify the number of days"
+								}
+							]
+						},
+						"description": "Returns filtered assets records based on days selected in the specific column. Days format ## days is supported, e.g 365 days"
+					},
+					"response": []
+				}
+			],
+			"description": "# Introduction\n\nReturns the asset records for all assets discovered in the network.\n\n## Authentication\n\nREST clients to authenticate themselves using basic authentication by providing Asimily API username and password.\n\n## Filter data types\n\nFilters supported belongs to below data type are supported:\n- Boolean\n- Number\n- String\n- Pick List\n- IP Address\n- Mac Address\n- Date\n- Days"
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "{{password}}",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "{{username}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "https://<your-domain>-portal.asimily.com",
+			"type": "string"
+		},
+		{
+			"key": "username",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
