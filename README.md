@@ -1,2 +1,2 @@
-# asimily-api-python-examples
-This project has sample python code for developing integrations with Asimily Insight 
+# Asimily REST API examples
+This project has postman collections & sample python code for developing integrations with Asimily Insight REST API
