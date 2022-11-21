@@ -13,10 +13,10 @@ api_endpoint = "/api/extapi/assets"
 filename = "asset_export.json"
 
 # Filter and Pagination parameters
-params = {'size': page_size, 'deviceType': ['Infusion pump','IoT/Medical device']}
+params = { 'deviceType': ['Infusion pump','IoT/Medical device']}
 
 url_pramas = urllib.parse.urlencode(params, quote_via=urllib.parse.quote, doseq=True)
-base_url = "".join([portal_url, api_endpoint, "/?", url_pramas])
+base_url = "".join([portal_url, api_endpoint, "/?", url_pramas, '&size=', str(page_size)])
 
 # Make get call to given endpoint
 def make_api_call(user, password, url):
@@ -34,6 +34,12 @@ def make_api_call(user, password, url):
 
 # Iterate through the API pages and export all assests matching filter criteria 
 def asset_export(filename): 
+    print("-"*50)
+    print("Exporting asset data for site:", portal_url)
+    print("Filters:")
+    for k, v in params.items():
+        print("\t",k ,":", v)
+    print("-"*50)
     records = []
     data = {}
     data = make_api_call(user, password, base_url + '&page=0')
@@ -46,7 +52,7 @@ def asset_export(filename):
         # Loop over number of pages to get all devices matching the filter condition
         for page_num in range(1, total_pages):
             url = base_url + '&page='+ str(page_num)
-            print("[info] fecting:", url)
+            print("[info] fetching:", url)
             data = make_api_call(user, password, url)
             records = records + (data['content'])
         
