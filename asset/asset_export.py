@@ -15,8 +15,9 @@ filename = "asset_export.json"
 # Filter and Pagination parameters
 params = { 'deviceType': ['Infusion pump','IoT/Medical device']}
 
-url_pramas = urllib.parse.urlencode(params, quote_via=urllib.parse.quote, doseq=True)
-base_url = "".join([portal_url, api_endpoint, "/?", url_pramas, '&size=', str(page_size), '&sort=defaultSort'])
+url_params = urllib.parse.urlencode(params, quote_via=urllib.parse.quote, doseq=True)
+sort_params = 'defaultSort'
+base_url = "".join([portal_url, api_endpoint, "/?", url_params, '&size=', str(page_size), '&sort=', str(sort_params)])
 
 # Make get call to given endpoint
 def make_api_call(user, password, url):
