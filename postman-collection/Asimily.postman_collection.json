@@ -1,22 +1,22 @@
 {
 	"info": {
-		"_postman_id": "759d093d-9baf-4a3d-824d-9fc8f237be4f",
+		"_postman_id": "41d85c80-c342-430c-bb4b-83f7153af10d",
 		"name": "Asimily",
 		"description": "**Asimily Insight** provides a RESTful API to allow 3rd party application developers to integrate their NAC, CMMS systems with Asimily Insight. These REST API functions provide access to device information such as IT parameters, medical parameters, security parameters, asset vulnerabilities (CVEs), asset anomalies, FDA recalls, and utilization among others.\n\nThe API enforces secure access through https and basic authentication. Contact your Asimily partner program representative to get access to a test environment and API credentials to start building your Asimily integration application.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "21059845"
+		"_exporter_id": "23869512"
 	},
 	"item": [
 		{
 			"name": "Assets",
 			"item": [
 				{
-					"name": "All Assests",
+					"name": "Assests with String Parameter",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/extapi/assets?page=0&size=100",
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&os=windows*",
 							"host": [
 								"{{url}}"
 							],
@@ -35,10 +35,51 @@
 									"key": "size",
 									"value": "100",
 									"description": "Number of records to return per page. This defaults to 15 if not specified."
+								},
+								{
+									"key": "os",
+									"value": "windows*"
 								}
 							]
 						},
-						"description": "Returns all Assets discovered in network"
+						"description": "Returns Assets with specified string parameter\n\nReturns filtered assets records based on string filter in the specific column.\n\nString operator supported:\n```\n<char>* - Starts with\n*<char>* - Contains\n*<char> - Ends with\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Assests belongs to specific device family",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&deviceFamily=Medical Devices",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 15 if not specified."
+								},
+								{
+									"key": "deviceFamily",
+									"value": "Medical Devices",
+									"description": "Specify the device family that you see on the portal"
+								}
+							]
+						},
+						"description": "Returns Assets with specified Pick List value\n\nFiltered all the records based on selection of distinct value(s) from specific column"
 					},
 					"response": []
 				},
@@ -48,7 +89,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/extapi/assets?page=0&size=100&ipAddr=10.40.0.0/16&ipAddr=172.17.203.103",
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&ipAddr=10.40.0.0/16",
 							"host": [
 								"{{url}}"
 							],
@@ -71,11 +112,6 @@
 								{
 									"key": "ipAddr",
 									"value": "10.40.0.0/16",
-									"description": "IP Address with CIDR range or can specify IP address"
-								},
-								{
-									"key": "ipAddr",
-									"value": "172.17.203.103",
 									"description": "IP Address with CIDR range or can specify IP address"
 								}
 							]
@@ -148,8 +184,7 @@
 								},
 								{
 									"key": "isConnected",
-									"value": "No",
-									"description": "Boolean parameter supports Yes / No values"
+									"value": "No"
 								}
 							]
 						},
@@ -191,43 +226,6 @@
 							]
 						},
 						"description": "Returns filtered assets records based on number filter parameter in the specific column. Append below operator string to filter the records. e.g. riskGte, or likelihoodLte\n\nNumber operators supported are:\nGte - Greater than or equal\nGtr - Greater than\nLte - Less than or equal\nLst - Less than"
-					},
-					"response": []
-				},
-				{
-					"name": "Assests with String Parameter",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/api/extapi/assets?page=0&size=100&hostName=*a*",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"extapi",
-								"assets"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "0",
-									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
-								},
-								{
-									"key": "size",
-									"value": "100",
-									"description": "Number of records to return per page. This defaults to 15 if not specified."
-								},
-								{
-									"key": "hostName",
-									"value": "*a*",
-									"description": "String params supports contains, starts with and ends with. For more information read API documentation"
-								}
-							]
-						},
-						"description": "Returns Assets with specified string parameter\n\nReturns filtered assets records based on string filter in the specific column.\n\nString operator supported:\n```\n<char>* - Starts with\n*<char>* - Contains\n*<char> - Ends with\n```"
 					},
 					"response": []
 				},
@@ -348,7 +346,7 @@
 					"response": []
 				}
 			],
-			"description": "# Introduction\n\nReturns the asset records for all assets discovered in the network.\n\n## Authentication\n\nREST clients to authenticate themselves using basic authentication by providing Asimily API username and password.\n\n## Filter data types\n\nFilters supported belongs to below data type are supported:\n- Boolean\n- Number\n- String\n- Pick List\n- IP Address\n- Mac Address\n- Date\n- Days"
+			"description": "# Introduction\n\nReturns the asset records for all assets discovered in the network matching the filter criteria.\n\n> Note: In order to access the API, users must specify at least one filter condition. By specifying filter conditions, users can narrow down their search criteria and retrieve precisely the information they need, reducing the load on the system and improving response times. \n  \n\n## Authentication\n\nREST clients to authenticate themselves using basic authentication by providing Asimily API username and password.\n\n## Filter data types\n\nFilters supported belongs to below data type are supported:\n\n- Boolean\n- Number\n- String\n- Pick List\n- IP Address\n- Mac Address\n- Date\n- Days"
 		}
 	],
 	"auth": {
