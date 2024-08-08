@@ -34,7 +34,7 @@
 								{
 									"key": "size",
 									"value": "100",
-									"description": "Number of records to return per page. This defaults to 15 if not specified."
+									"description": "Number of records to return per page. This defaults to 500 if not specified."
 								},
 								{
 									"key": "os",
@@ -70,7 +70,7 @@
 								{
 									"key": "size",
 									"value": "100",
-									"description": "Number of records to return per page. This defaults to 15 if not specified."
+									"description": "Number of records to return per page. This defaults to 500 if not specified."
 								},
 								{
 									"key": "deviceFamily",
@@ -107,7 +107,7 @@
 								{
 									"key": "size",
 									"value": "100",
-									"description": "Number of records to return per page. This defaults to 15 if not specified."
+									"description": "Number of records to return per page. This defaults to 500 if not specified."
 								},
 								{
 									"key": "ipAddr",
@@ -144,7 +144,7 @@
 								{
 									"key": "size",
 									"value": "100",
-									"description": "Number of records to return per page. This defaults to 15 if not specified."
+									"description": "Number of records to return per page. This defaults to 500 if not specified."
 								},
 								{
 									"key": "macAddr",
@@ -180,7 +180,7 @@
 								{
 									"key": "size",
 									"value": "100",
-									"description": "Number of records to return per page. This defaults to 15 if not specified."
+									"description": "Number of records to return per page. This defaults to 500 if not specified."
 								},
 								{
 									"key": "isConnected",
@@ -216,7 +216,7 @@
 								{
 									"key": "size",
 									"value": "100",
-									"description": "Number of records to return per page. This defaults to 15 if not specified."
+									"description": "Number of records to return per page. This defaults to 500 if not specified."
 								},
 								{
 									"key": "riskGte",
@@ -253,7 +253,7 @@
 								{
 									"key": "size",
 									"value": "100",
-									"description": "Number of records to return per page. This defaults to 15 if not specified."
+									"description": "Number of records to return per page. This defaults to 500 if not specified."
 								},
 								{
 									"key": "devicesSeenSince",
@@ -290,7 +290,7 @@
 								{
 									"key": "size",
 									"value": "100",
-									"description": "Number of records to return per page. This defaults to 15 if not specified."
+									"description": "Number of records to return per page. This defaults to 500 if not specified."
 								},
 								{
 									"key": "department",
@@ -332,7 +332,7 @@
 								{
 									"key": "size",
 									"value": "100",
-									"description": "Number of records to return per page. This defaults to 15 if not specified."
+									"description": "Number of records to return per page. This defaults to 500 if not specified."
 								},
 								{
 									"key": "discoveredOver",
@@ -342,6 +342,191 @@
 							]
 						},
 						"description": "Returns filtered assets records based on days selected in the specific column. Days format ## days is supported, e.g 365 days"
+					},
+					"response": []
+				},
+				{
+					"name": "Assests with CMMS ID paramter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&&cmmsId=HURON",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 500 if not specified."
+								},
+								{
+									"key": "cmmsId",
+									"value": "HURON",
+									"description": "Specifies the CMMS ID. For more information read API documentation"
+								}
+							]
+						},
+						"description": "Returns filtered assets records based on CMMS ID filter parameter in the specific column"
+					},
+					"response": []
+				},
+				{
+					"name": "Assests with Device Family paramter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&deviceFamily=Medical%20Devices",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 500 if not specified."
+								},
+								{
+									"key": "deviceFamily",
+									"value": "Medical%20Devices",
+									"description": "Specifies the Device Family. For more information read API documentation"
+								}
+							]
+						},
+						"description": "Returns filtered assets records based on Device Family filter parameter in the specific column"
+					},
+					"response": []
+				},
+				{
+					"name": "Assests with Device Type paramter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&deviceType=IT%20Workstation",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 500 if not specified."
+								},
+								{
+									"key": "deviceType",
+									"value": "IT%20Workstation",
+									"description": "Specifies the Device Type. For more information read API documentation"
+								}
+							]
+						},
+						"description": "Returns filtered assets records based on Device Type filter parameter in the specific column"
+					},
+					"response": []
+				},
+				{
+					"name": "Assests with Manufacturer paramter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&manufacturer=MISC",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 500 if not specified."
+								},
+								{
+									"key": "manufacturer",
+									"value": "MISC",
+									"description": "Specifies the Manufacturer. For more information read API documentation"
+								}
+							]
+						},
+						"description": "Returns filtered assets records based on Manufacturer filter parameter in the specific column"
+					},
+					"response": []
+				},
+				{
+					"name": "Assests with Device Model paramter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&deviceModel=CABLES%20/%20WIRES",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 500 if not specified."
+								},
+								{
+									"key": "deviceModel",
+									"value": "CABLES%20/%20WIRES",
+									"description": "Specifies the Device Model. For more information read API documentation"
+								}
+							]
+						},
+						"description": "Returns filtered assets records based on Device Model filter parameter in the specific column"
 					},
 					"response": []
 				}
