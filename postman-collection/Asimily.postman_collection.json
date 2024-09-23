@@ -529,6 +529,80 @@
 						"description": "Returns filtered assets records based on Device Model filter parameter in the specific column"
 					},
 					"response": []
+				},
+				{
+					"name": "Assests with Device ID paramter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&deviceId=37005",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 500 if not specified."
+								},
+								{
+									"key": "deviceId",
+									"value": "37005",
+									"description": "Specifies the Device ID. For more information read API documentation"
+								}
+							]
+						},
+						"description": "Returns filtered assets records based on Device ID filter parameter in the specific column"
+					},
+					"response": []
+				},
+				{
+					"name": "Assests with Device Tag paramter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/extapi/assets?page=0&size=100&deviceTag=ephi",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"extapi",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number from the list of assets to return. This defaults to 0 if not specified"
+								},
+								{
+									"key": "size",
+									"value": "100",
+									"description": "Number of records to return per page. This defaults to 500 if not specified."
+								},
+								{
+									"key": "deviceTag",
+									"value": "ephi",
+									"description": "Specifies the Device Tag. For more information read API documentation"
+								}
+							]
+						},
+						"description": "Returns filtered assets records based on Device Tag filter parameter in the specific column"
+					},
+					"response": []
 				}
 			],
 			"description": "# Introduction\n\nReturns the asset records for all assets discovered in the network matching the filter criteria.\n\n> Note: In order to access the API, users must specify at least one filter condition. By specifying filter conditions, users can narrow down their search criteria and retrieve precisely the information they need, reducing the load on the system and improving response times. \n  \n\n## Authentication\n\nREST clients to authenticate themselves using basic authentication by providing Asimily API username and password.\n\n## Filter data types\n\nFilters supported belongs to below data type are supported:\n\n- Boolean\n- Number\n- String\n- Pick List\n- IP Address\n- Mac Address\n- Date\n- Days"
