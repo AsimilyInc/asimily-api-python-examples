@@ -163,7 +163,7 @@ def _request(method, url, user, password, json_body=None):
             print(f"[{method}] Attempt {attempt + 1} failed for {url}. Error: {e}")
             attempt += 1
             if attempt < MAX_RETRIES:
-                wait_time = INITIAL_WAIT_TIME * 2 ** attempt
+                wait_time = INITIAL_WAIT_TIME * (2 ** (attempt - 1))
                 print(f"Retrying in {wait_time} seconds...")
                 time.sleep(wait_time)
     print(f"Maximum retries ({MAX_RETRIES}) exceeded for {url}")
@@ -198,7 +198,7 @@ ASSET_URL = construct_url(PORTAL_URL, ASSET_ENDPOINT, size=PAGE_SIZE, sort=SORT_
 
 
 def export_assets(export_dir):
-    """Fetches and exports all assets matching filter criteria to the output directory."""
+    """Fetches and exports all assets matching filter criteria to the specified output directory"""
     print("-" * 50)
     print(f"Exporting asset data for site: {PORTAL_URL}")
     print("Filters:")
@@ -255,7 +255,7 @@ def write_to_file(data, filename):
         write_to_file(all_cves_page, 'all_cves_page_0.json')
     """
     filepath = os.path.join(OUTPUT_DIRECTORY, filename)
-    with open(filepath, 'w') as f:
+    with open(filepath, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, separators=(',', ': '))
     print(f"Saved: {filepath}")
 
@@ -701,6 +701,8 @@ def fix_recall(recall_number, device_ids):
         fix_recall('Z-0020-2025', [195802, 118390])   # fix for specific devices
         fix_recall('Z-0020-2025', [-1])                # fix for all associated devices
     """
+    if not device_ids:
+         raise ValueError("device_ids must not be empty (or use [-1] for all)")
     if device_ids != [-1] and len(device_ids) > 100:
         raise ValueError("Maximum 100 device IDs per request (or use [-1] for all)")
     url = construct_url(PORTAL_URL, RECALL_ENDPOINT, recall_number)
