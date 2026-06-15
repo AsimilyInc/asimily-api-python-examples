@@ -118,6 +118,9 @@ SORT_PARAMS = ''
 # PARAMS = {'devicesSeenSince': ['2024-01-01']}                       # Devices Seen Since (YYYY-MM-DD)
 # PARAMS = {'discoverySourceValue': ['Nmap']}                         # Discovery Source
 # PARAMS = {'isDeviceDeActivated': ['false']}                         # Deactivated (Boolean)
+#
+# PARAMS = {'hasUniqueIP': ['Yes']}                                   # Has Unique IP (String Yes or No)
+
 
 PARAMS = {'deviceFamily': ['Medical Devices']}
 
