@@ -249,7 +249,7 @@ def write_to_file(data, filename):
     Args:
         data:     Any JSON-serialisable object (dict, list, etc.).
         filename: Output filename (e.g. 'device_5_ports.json').
-                  The file is always written under EXPORT_DIR.
+                  The file is always written under OUTPUT_DIRECTORY.
 
     Examples:
         write_to_file(asset, f"{asset['deviceID']}.json")
