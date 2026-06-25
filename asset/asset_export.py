@@ -249,7 +249,7 @@ class ApiClient:
                 if response.status_code == 204 or not response.content:
                     return {}
                 return response.json()
-            except RequestException as e:
+            except (RequestException, ValueError) as e:
                 print(f"[{method}] Attempt {attempt + 1} failed for {url}. Error: {e}")
                 if attempt < self.max_retries - 1:
                     wait = self.initial_wait * (2 ** attempt)
@@ -320,7 +320,7 @@ def _export_paginated(
         print(f"No data returned for '{desc}' — check credentials / filters")
         return
 
-    total_pages = first_page.get('totalPages', 1)
+    total_pages = int(first_page.get('totalPages') or 1)
     records: list[Any] = list(first_page.get('content', []))
 
     with tqdm(total=total_pages, desc=desc) as pbar:
