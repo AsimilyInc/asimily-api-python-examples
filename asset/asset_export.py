@@ -167,12 +167,17 @@ def _resolve_device_params(
     """
     Mutate *params* with exactly one device identifier.
 
-    Raises ValueError if none of the three identifiers is provided.
-    Priority: mac_addr > ip_addr > device_id.
+    Raises ValueError if zero or more than one identifier is provided.
     """
-    if mac_addr:
+    provided = [x for x in (mac_addr, ip_addr, device_id) if x is not None]
+    if len(provided) > 1:
+        raise ValueError(
+            "Provide exactly one of: device_id, mac_addr, or ip_addr "
+            f"(got {len(provided)})"
+        )
+    if mac_addr is not None:
         params['macAddr'] = mac_addr
-    elif ip_addr:
+    elif ip_addr is not None:
         params['ipAddr'] = ip_addr
     elif device_id is not None:
         params['deviceId'] = device_id
@@ -237,6 +242,7 @@ class ApiClient:
                     auth=self._auth,
                     headers=self._headers,
                     json=json_body,
+                    timeout=30,
                 )
                 response.raise_for_status()
                 if response.status_code == 204 or not response.content:
@@ -382,13 +388,12 @@ def export_assets(
 
     with tqdm(total=len(records), desc="Asset Export Progress") as pbar:
         for asset in records:
-            cve_url = client.url(CVE_ENDPOINT, str(asset['deviceID']))
-            cve_records = client.get(cve_url)
+            cve_records = fetch_device_vulnerabilities(client, device_id=asset['deviceID'])
             client.write_to_file(asset, f"{asset['deviceID']}.json")
             client.write_to_file(cve_records, f"{asset['deviceID']}_cve.json")
             pbar.update(1)
 
-    print(f"Successfully exported to: {export_dir}")
+    print(f"Successfully exported to: {client.output_dir}")
     print("~" * 90)
 
 
