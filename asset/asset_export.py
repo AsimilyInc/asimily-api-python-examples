@@ -1023,6 +1023,7 @@ if __name__ == "__main__":
     # all_cves = fetch_all_cves(client, filters={'cveScore': [{'operator': 'Gte', 'value': 7.5}]})
     # all_cves = fetch_all_cves(client, sort='deviceInfoId', filters={'deviceRangeId': [{'operator': '>', 'value': 166929}]})
     # all_cves = fetch_all_cves(client, filters={'cvesLastUpdatedSince': [{'operator': '>', 'value': '2025-01-01'}]})
+    # all_cves = fetch_all_cves(client, filters={'cvesOpenedSince': [{'operator': '>', 'value': '2025-01-01'}]})
     # client.write_to_file(all_cves, 'all_cves_page_0.json')
 
     # --- Export ALL CVE pages with progress bar ---
