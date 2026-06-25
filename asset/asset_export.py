@@ -151,7 +151,7 @@ def construct_url(base: str, *paths: str, **query_params: Any) -> str:
     for path in paths:
         url += '/' + path.strip('/')
     if query_params:
-        url += '?' + urllib.parse.urlencode(query_params, doseq=True)
+        url += '?' + urllib.parse.urlencode(query_params, quote_via=urllib.parse.quote, doseq=True)
     return url
 
 
