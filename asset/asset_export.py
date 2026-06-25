@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# Requires Python 3.10+.
 import os
 import json
 import time
@@ -340,7 +341,6 @@ def _export_paginated(
 def export_assets(
     client: ApiClient,
     params: dict[str, list[str]],
-    export_dir: str,
     page_size: int = PAGE_SIZE,
     sort: str = DEFAULT_SORT,
 ) -> None:
@@ -352,7 +352,6 @@ def export_assets(
     Args:
         client:    Authenticated ApiClient.
         params:    Filter parameters (see PARAMS reference at top of file).
-        export_dir: Label used in the completion message.
         page_size: Assets per page.
         sort:      Sort field string.
     """
@@ -370,7 +369,7 @@ def export_assets(
         print("Nothing to export — check credentials / filters")
         return
 
-    total_pages = initial_data.get('totalPages', 0)
+    total_pages = int(initial_data.get('totalPages') or 1)
     print(f"[info] total pages: {total_pages}")
     records: list[Any] = list(initial_data.get('content', []))
 
@@ -967,7 +966,7 @@ if __name__ == "__main__":
     )
 
     # --- Asset export (paginated, writes JSON files to output/) ---
-    export_assets(client, PARAMS, EXPORT_DIR)
+    export_assets(client, PARAMS)
 
     # --- Fetch device ports ---
     # ports = fetch_device_ports(client, mac_addr='<mac-address>')
