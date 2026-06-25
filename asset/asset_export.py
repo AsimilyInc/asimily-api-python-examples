@@ -7,12 +7,23 @@ from requests.exceptions import RequestException
 import urllib.parse
 from tqdm import tqdm
 
+# ==============================================================================
+# Copyright (c) 2026 Asimily, Inc. All rights reserved.
+#
+# This software and associated documentation files (the "Software") are the
+# proprietary and confidential property of Asimily, Inc.
+#
+# Unauthorized copying, modification, distribution, or use of this file and
+# its contents, via any medium, without the express written permission and
+# a valid Software License Agreement from Asimily, Inc. is strictly prohibited.
+# ==============================================================================
+
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
 USER = '<username>'
 PASSWORD = '<password>'
-SOURCE = '<YourOrganizationName>'  # Alphabetic only. Mandatory as of May 1, 2026.
+SOURCE = '<YourOrganizationName>'
 PAGE_SIZE = 500
 PORTAL_URL = "<portal-url>"  # e.g. "https://<name>-portal.asimily.com"
 EXPORT_DIR = "output"
@@ -260,7 +271,7 @@ def write_to_file(data, filename):
     filepath = os.path.join(OUTPUT_DIRECTORY, filename)
     with open(filepath, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, separators=(',', ': '))
-    print(f"Saved: {filepath}")
+    tqdm.write(f"Saved: {filepath}")
 
 
 # ---------------------------------------------------------------------------
@@ -595,7 +606,7 @@ def fetch_all_cves(page=0, size=100, sort='', filters=None):
         deviceTag             — multi-value, e.g. ['Only Broadcast/DNS Traffic Received']
         deviceRangeId         — fetch in batches by internal device ID (operator '>')
         cvesLastUpdatedSince  — ISO date string (operator '>')
-
+        cvesOpenedSince       — ISO date string (operator '>')
     Returns:
         Paginated response with 'content', 'totalPages', 'totalElements'.
 
@@ -609,10 +620,87 @@ def fetch_all_cves(page=0, size=100, sort='', filters=None):
         fetch_all_cves(filters={'deviceTag': [{'operator': ':', 'value': 'Only Broadcast/DNS Traffic Received'}]})
         fetch_all_cves(sort='deviceInfoId', filters={'deviceRangeId': [{'operator': '>', 'value': 166929}]})
         fetch_all_cves(filters={'cvesLastUpdatedSince': [{'operator': '>', 'value': '2025-01-01'}]})
+        fetch_all_cves(filters={'cvesOpenedSince': [{'operator': '>', 'value': '2025-01-01'}]})
     """
     url = construct_url(PORTAL_URL, ALL_CVES_ENDPOINT, page=page, size=size, sort=sort)
     body = {'filters': filters or {}}
     return make_api_post(USER, PASSWORD, url, body)
+
+
+# ---------------------------------------------------------------------------
+# Anomaly — Export All Anomalies (paginated, with progress bar)
+# ---------------------------------------------------------------------------
+
+def export_all_anomalies(filename, size=500, sort='', filters=None):
+    """
+    Fetch all anomaly pages and write the combined records to a single JSON file.
+
+    Args:
+        filename: Output filename (e.g. 'all_anomalies.json').
+        size:     Records per page, max 500 (default 500).
+        sort:     Sort field string (default '').
+        filters:  Dict of filter conditions (default: no filters).
+
+    Examples:
+        export_all_anomalies('all_anomalies.json')
+        export_all_anomalies('high_anomalies.json',
+                             filters={'anomaliesCriticality': [{'operator': ':', 'value': 'HIGH'}]})
+    """
+    first_page = fetch_all_anomalies(page=0, size=size, sort=sort, filters=filters)
+    if not first_page:
+        print("No anomaly data returned — check credentials / filters")
+        return
+
+    total_pages = first_page.get('totalPages', 1)
+    records = list(first_page.get('content', []))
+
+    with tqdm(total=total_pages, desc="Anomaly Export Progress") as pbar:
+        pbar.update(1)
+        for page_num in range(1, total_pages):
+            page_data = fetch_all_anomalies(page=page_num, size=size, sort=sort, filters=filters)
+            records.extend(page_data.get('content', []))
+            pbar.update(1)
+
+    write_to_file(records, filename)
+    print(f"Total anomaly records exported: {len(records)}")
+
+
+# ---------------------------------------------------------------------------
+# Vulnerability — Export All CVEs (paginated, with progress bar)
+# ---------------------------------------------------------------------------
+
+def export_all_cves(filename, size=500, sort='', filters=None):
+    """
+    Fetch all CVE pages and write the combined records to a single JSON file.
+
+    Args:
+        filename: Output filename (e.g. 'all_cves.json').
+        size:     Records per page, max 500 (default 500).
+        sort:     Sort field string (default '').
+        filters:  Dict of filter conditions (default: no filters).
+
+    Examples:
+        export_all_cves('all_cves.json')
+        export_all_cves('critical_cves.json',
+                        filters={'cveScore': [{'operator': 'Gte', 'value': 7.5}]})
+    """
+    first_page = fetch_all_cves(page=0, size=size, sort=sort, filters=filters)
+    if not first_page:
+        print("No CVE data returned — check credentials / filters")
+        return
+
+    total_pages = first_page.get('totalPages', 1)
+    records = list(first_page.get('content', []))
+
+    with tqdm(total=total_pages, desc="CVE Export Progress") as pbar:
+        pbar.update(1)
+        for page_num in range(1, total_pages):
+            page_data = fetch_all_cves(page=page_num, size=size, sort=sort, filters=filters)
+            records.extend(page_data.get('content', []))
+            pbar.update(1)
+
+    write_to_file(records, filename)
+    print(f"Total CVE records exported: {len(records)}")
 
 
 # ---------------------------------------------------------------------------
@@ -724,11 +812,13 @@ if __name__ == "__main__":
     # --- Fetch device ports ---
     # ports = fetch_device_ports(mac_addr='<mac-address>')
     # ports = fetch_device_ports(device_id=5)
+    # ports = fetch_device_ports(ip_addr='<ip-address>')
     # write_to_file(ports, 'device_5_ports.json')
 
     # --- Fetch device applications ---
     # apps = fetch_device_applications(mac_addr='<mac-address>')
     # apps = fetch_device_applications(device_id=5)
+    # apps = fetch_device_applications(ip_addr='<ip-address>')
     # write_to_file(apps, 'device_5_apps.json')
 
     # --- Bulk fetch applications + ports (max 100 device IDs) ---
@@ -745,14 +835,19 @@ if __name__ == "__main__":
     # anomalies = fetch_device_anomalies(mac_addr='<mac-address>')
     # anomalies = fetch_device_anomalies(device_id=3547, criticality='HIGH')
     # anomalies = fetch_device_anomalies(device_id=3547, is_fixed='NOT_FIXED')
+    # anomalies = fetch_device_anomalies(ip_addr='<ip-address>')
     # write_to_file(anomalies, 'device_3547_anomalies.json')
 
-    # --- Fetch all anomalies (paginated POST) ---
+    # --- Fetch all anomalies (paginated POST, single page) ---
     # all_anomalies = fetch_all_anomalies()
     # all_anomalies = fetch_all_anomalies(filters={'anomaliesCriticality': [{'operator': ':', 'value': 'HIGH'}]})
     # all_anomalies = fetch_all_anomalies(filters={'deviceRangeId': [{'operator': '>', 'value': 153}]})
     # all_anomalies = fetch_all_anomalies(filters={'anomaliesLastUpdatedSince': [{'operator': '>', 'value': '2025-01-01'}]})
     # write_to_file(all_anomalies, 'all_anomalies_page_0.json')
+
+    # --- Export ALL anomaly pages with progress bar ---
+    # export_all_anomalies('all_anomalies.json')
+    # export_all_anomalies('high_anomalies.json', filters={'anomaliesCriticality': [{'operator': ':', 'value': 'HIGH'}]})
 
     # --- Fix anomaly ---
     # result = fix_anomaly('564945:080457')
@@ -764,12 +859,16 @@ if __name__ == "__main__":
     # cves = fetch_device_vulnerabilities(device_id=21366, is_fixed='FIXED')
     # write_to_file(cves, 'device_21366_cves.json')
 
-    # --- Fetch all CVEs (paginated POST) ---
+    # --- Fetch all CVEs (paginated POST, single page) ---
     # all_cves = fetch_all_cves()
     # all_cves = fetch_all_cves(filters={'cveScore': [{'operator': 'Gte', 'value': 7.5}]})
     # all_cves = fetch_all_cves(sort='deviceInfoId', filters={'deviceRangeId': [{'operator': '>', 'value': 166929}]})
     # all_cves = fetch_all_cves(filters={'cvesLastUpdatedSince': [{'operator': '>', 'value': '2025-01-01'}]})
     # write_to_file(all_cves, 'all_cves_page_0.json')
+
+    # --- Export ALL CVE pages with progress bar ---
+    # export_all_cves('all_cves.json')
+    # export_all_cves('critical_cves.json', filters={'cveScore': [{'operator': 'Gte', 'value': 7.5}]})
 
     # --- Fix CVE ---
     # result = fix_cve('CVE-2021-1722', [195802, 118390])
