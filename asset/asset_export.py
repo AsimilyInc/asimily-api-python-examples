@@ -47,6 +47,7 @@ ANOMALY_ENDPOINT = "/api/extapi/assets/anomaly"
 ALL_ANOMALIES_ENDPOINT = "/api/extapi/assets/anomalies"
 FIX_ANOMALY_ENDPOINT = "/api/extapi/assets/anomalyfix"
 RECALL_ENDPOINT = "/api/extapi/assets/recall"
+RISK_SCORES_ENDPOINT = "/api/extapi/assets/riskscores"
 
 DEFAULT_SORT = ''
 
@@ -953,6 +954,38 @@ def fix_recall(
 
 
 # ---------------------------------------------------------------------------
+# Risk Score — Fetch Medical and Industry Risk Score
+# (GET /api/extapi/assets/riskscores)
+# ---------------------------------------------------------------------------
+
+def fetch_risk_scores(
+    client: ApiClient,
+    date: str | None = None,
+) -> dict[str, Any]:
+    """
+    Fetch the Medical (IoMT), IoT and OT risk scores for the organization and
+    the industry benchmark, as shown on the Security Summary report.
+
+    Args:
+        client: Authenticated ApiClient.
+        date:   ISO-8601 date 'yyyy-MM-dd' (optional, defaults to today).
+
+    Returns:
+        {'requestedDate': ..., 'organization': {'iomtRiskScore', 'iotRiskScore',
+        'otRiskScore'}, 'industry': {...}}. Scores are whole numbers; a score
+        that is not available is returned as 0.
+
+    Examples:
+        fetch_risk_scores(client)
+        fetch_risk_scores(client, date='2025-01-15')
+    """
+    params: dict[str, Any] = {}
+    if date:
+        params['date'] = date
+    return client.get(client.url(RISK_SCORES_ENDPOINT, **params))
+
+
+# ---------------------------------------------------------------------------
 # Entry point — sample usage
 # ---------------------------------------------------------------------------
 
@@ -1044,3 +1077,9 @@ if __name__ == "__main__":
     # result = fix_recall(client, 'Z-0020-2025', [195802, 118390])
     # result = fix_recall(client, 'Z-0020-2025', [-1])  # fix for all associated devices
     # print(result)
+
+    # --- Fetch Medical, IoT and OT risk scores (organization and industry) ---
+    # scores = fetch_risk_scores(client)
+    # scores = fetch_risk_scores(client, date='2025-01-15')
+    # print(scores['organization']['iomtRiskScore'], scores['industry']['iomtRiskScore'])
+    # client.write_to_file(scores, 'risk_scores.json')
