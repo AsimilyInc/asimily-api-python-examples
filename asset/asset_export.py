@@ -1081,5 +1081,4 @@ if __name__ == "__main__":
     # --- Fetch Medical, IoT and OT risk scores (organization and industry) ---
     # scores = fetch_risk_scores(client)
     # scores = fetch_risk_scores(client, date='2025-01-15')
-    # print(scores['organization']['iomtRiskScore'], scores['industry']['iomtRiskScore'])
     # client.write_to_file(scores, 'risk_scores.json')
