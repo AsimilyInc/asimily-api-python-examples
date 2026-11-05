@@ -47,6 +47,7 @@ ANOMALY_ENDPOINT = "/api/extapi/assets/anomaly"
 ALL_ANOMALIES_ENDPOINT = "/api/extapi/assets/anomalies"
 FIX_ANOMALY_ENDPOINT = "/api/extapi/assets/anomalyfix"
 RECALL_ENDPOINT = "/api/extapi/assets/recall"
+RISK_SCORES_ENDPOINT = "/api/extapi/assets/riskscores"
 
 DEFAULT_SORT = ''
 
@@ -852,6 +853,7 @@ def fix_cve(
     client: ApiClient,
     cve_name: str,
     device_ids: list[int],
+    comment: str | None = None,
 ) -> dict[str, Any]:
     """
     Mark a CVE as fixed for the specified devices.
@@ -860,6 +862,8 @@ def fix_cve(
         client:     Authenticated ApiClient.
         cve_name:   CVE identifier string, e.g. 'CVE-2021-1722'.
         device_ids: List of integer device IDs (max 50), or [-1] to fix for all devices.
+        comment:    Optional fix comment. Recorded as '[External API] <comment>'.
+                    If omitted or blank, the default 'CVE fixed through External REST API' is used.
 
     Returns:
         {'message': '...', 'jobId': <int>}
@@ -867,13 +871,14 @@ def fix_cve(
     Examples:
         fix_cve(client, 'CVE-2021-1722', [195802, 118390])   # fix for specific devices
         fix_cve(client, 'CVE-2021-1722', [-1])                # fix for all associated devices
+        fix_cve(client, 'CVE-2021-1722', [195802], 'Fixed by Infra team')  # with a fix comment
     """
     if device_ids != [-1] and len(device_ids) > 50:
         raise ValueError("Maximum 50 device IDs per request (or use [-1] for all)")
-    return client.post(
-        client.url(FIX_CVE_ENDPOINT),
-        {'cveName': cve_name, 'deviceIds': device_ids},
-    )
+    payload: dict[str, Any] = {'cveName': cve_name, 'deviceIds': device_ids}
+    if comment is not None:
+        payload['comment'] = comment
+    return client.post(client.url(FIX_CVE_ENDPOINT), payload)
 
 
 # ---------------------------------------------------------------------------
@@ -926,6 +931,7 @@ def fix_recall(
     client: ApiClient,
     recall_number: str,
     device_ids: list[int],
+    comment: str | None = None,
 ) -> dict[str, Any]:
     """
     Mark a recall as fixed for the specified devices.
@@ -934,6 +940,8 @@ def fix_recall(
         client:        Authenticated ApiClient.
         recall_number: Recall number string, e.g. 'Z-0020-2025'.
         device_ids:    List of integer device IDs (max 100), or [-1] to fix for all devices.
+        comment:       Optional fix comment. Recorded as '[External API] <comment>'.
+                       If omitted or blank, the default 'Recall fixed through External REST API' is used.
 
     Returns:
         {'message': '...', 'jobId': <int>}
@@ -941,15 +949,48 @@ def fix_recall(
     Examples:
         fix_recall(client, 'Z-0020-2025', [195802, 118390])   # fix for specific devices
         fix_recall(client, 'Z-0020-2025', [-1])                # fix for all associated devices
+        fix_recall(client, 'Z-0020-2025', [195802], 'Firmware updated by Biomed team')  # with a fix comment
     """
     if not device_ids:
         raise ValueError("device_ids must not be empty (or use [-1] for all)")
     if device_ids != [-1] and len(device_ids) > 100:
         raise ValueError("Maximum 100 device IDs per request (or use [-1] for all)")
-    return client.patch(
-        client.url(RECALL_ENDPOINT, recall_number),
-        {'deviceIds': device_ids},
-    )
+    payload: dict[str, Any] = {'deviceIds': device_ids}
+    if comment is not None:
+        payload['comment'] = comment
+    return client.patch(client.url(RECALL_ENDPOINT, recall_number), payload)
+
+
+# ---------------------------------------------------------------------------
+# Risk Score — Fetch Medical and Industry Risk Score
+# (GET /api/extapi/assets/riskscores)
+# ---------------------------------------------------------------------------
+
+def fetch_risk_scores(
+    client: ApiClient,
+    date: str | None = None,
+) -> dict[str, Any]:
+    """
+    Fetch the Medical (IoMT), IoT and OT risk scores for the organization and
+    the industry benchmark, as shown on the Security Summary report.
+
+    Args:
+        client: Authenticated ApiClient.
+        date:   ISO-8601 date 'yyyy-MM-dd' (optional, defaults to today).
+
+    Returns:
+        {'requestedDate': ..., 'organization': {'iomtRiskScore', 'iotRiskScore',
+        'otRiskScore'}, 'industry': {...}}. Scores are whole numbers; a score
+        that is not available is returned as 0.
+
+    Examples:
+        fetch_risk_scores(client)
+        fetch_risk_scores(client, date='2025-01-15')
+    """
+    params: dict[str, Any] = {}
+    if date:
+        params['date'] = date
+    return client.get(client.url(RISK_SCORES_ENDPOINT, **params))
 
 
 # ---------------------------------------------------------------------------
@@ -1033,6 +1074,7 @@ if __name__ == "__main__":
     # --- Fix CVE ---
     # result = fix_cve(client, 'CVE-2021-1722', [195802, 118390])
     # result = fix_cve(client, 'CVE-2021-1722', [-1])  # fix for all associated devices
+    # result = fix_cve(client, 'CVE-2021-1722', [195802, 118390], comment='Fixed by Infra team')
     # print(result)
 
     # --- Fetch recalls for a device ---
@@ -1043,4 +1085,10 @@ if __name__ == "__main__":
     # --- Fix recall ---
     # result = fix_recall(client, 'Z-0020-2025', [195802, 118390])
     # result = fix_recall(client, 'Z-0020-2025', [-1])  # fix for all associated devices
+    # result = fix_recall(client, 'Z-0020-2025', [195802, 118390], comment='Firmware updated by Biomed team')
     # print(result)
+
+    # --- Fetch Medical, IoT and OT risk scores (organization and industry) ---
+    # scores = fetch_risk_scores(client)
+    # scores = fetch_risk_scores(client, date='2025-01-15')
+    # client.write_to_file(scores, 'risk_scores.json')
